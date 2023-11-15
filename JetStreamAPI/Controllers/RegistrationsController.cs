@@ -17,25 +17,45 @@ public class RegistrationsController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> CreateServiceOrder([FromBody] ServiceOrderDto serviceOrderDto)
     {
-        // Create a new ServiceOrder object from the DTO
-        var serviceOrder = new ServiceOrder
+        try
         {
-            CustomerName = serviceOrderDto.Name,
-            Email = serviceOrderDto.Email,
-            PhoneNumber = serviceOrderDto.Phone,
-            Priority = serviceOrderDto.Priority,
-            ServiceType = serviceOrderDto.Service,
-            CreationDate = serviceOrderDto.CreateDate,
-            PickupDate = serviceOrderDto.PickupDate,
-            Comments = serviceOrderDto.Comment
-        };
+            var creationDate = DateTime.UtcNow;
+            var pickupDate = CalculatePickupDate(serviceOrderDto.Priority, creationDate);
 
-        _context.ServiceOrders.Add(serviceOrder);
-        await _context.SaveChangesAsync();
+            var serviceOrder = new ServiceOrder
+            {
+                CustomerName = serviceOrderDto.Name,
+                Email = serviceOrderDto.Email,
+                PhoneNumber = serviceOrderDto.Phone,
+                Priority = serviceOrderDto.Priority,
+                ServiceType = serviceOrderDto.Service,
+                CreationDate = creationDate,
+                PickupDate = pickupDate,
+                Comments = serviceOrderDto.Comment
+            };
 
-        // Return a confirmation with the ID of the created service order
-        return Ok(new { id = serviceOrder.Id });
+            _context.ServiceOrders.Add(serviceOrder);
+            await _context.SaveChangesAsync();
+
+            return Ok(new { id = serviceOrder.Id });
+        }
+        catch (Exception)
+        {
+            return StatusCode(500, "Ein Fehler ist beim Erstellen des Serviceauftrags aufgetreten");
+        }
     }
+
+    private DateTime CalculatePickupDate(string priority, DateTime creationDate)
+    {
+        return priority switch
+        {
+            "low" => creationDate.AddDays(12),
+            "standard" => creationDate.AddDays(7),
+            "express" => creationDate.AddDays(5),
+            _ => creationDate
+        };
+    }
+
 
     // GET: api/serviceorders
     [HttpGet]
