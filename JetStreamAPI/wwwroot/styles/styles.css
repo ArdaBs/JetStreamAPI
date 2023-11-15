@@ -1,0 +1,172 @@
+.anmeldung {
+  z-index: 1000;
+}
+
+.title-white {
+  color: white;
+}
+
+.video-container {
+  position: relative;
+  padding-bottom: 56.25%; /* 16:9 aspect ratio */
+  overflow: hidden;
+  border-radius: 10px; /* Rounded corners */
+  margin-bottom: 100px;
+}
+
+.video-container video {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+#video-text-container {
+  margin-top: 150px;
+  margin-bottom: 150px;
+}
+
+.rounded-box {
+  background-color: #f8f9fa;
+  border-radius: 10px;
+  padding: 20px;
+  margin-top: 20px;
+  width: 80%;
+  margin-left: auto;
+  margin-right: auto;
+  opacity: 1;
+}
+
+.bg-box {
+  background: rgba(255, 255, 255, 0.9);
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+  border-radius: 10px;
+}
+
+.service-section {
+  padding: 20px; /* Adjust this value as needed */
+}
+
+.navbar-nav .nav-link,
+.navbar-title a {
+  position: relative;
+  transition: color 0.5s ease; /* Adding smooth transition */
+  color: inherit; /* Inherit the color from the parent element */
+  text-decoration: none; /* Remove default underline */
+}
+
+.navbar-nav .nav-link::before,
+.navbar-title a::before {
+  content: "";
+  position: absolute;
+  width: 100%;
+  height: 2px;
+  bottom: 0;
+  left: 0;
+  background-color: hsl(197, 100%, 76%); /* Change this to your desired color */
+  transform: scaleX(0); /* Initial width */
+  transform-origin: left;
+  transition: transform 0.5s ease; /* Adding animation */
+}
+
+.navbar-nav .nav-link:hover,
+.navbar-title a:hover {
+  color: hwb(266 41% 1%); /* Change this to your desired color */
+}
+
+.navbar-nav .nav-link:hover::before,
+.navbar-title a:hover::before {
+  transform: scaleX(1); /* Expand width on hover */
+}
+
+.navbar-title {
+  margin-right: 30px; /* Adjust the margin as needed */
+}
+
+#table-opacity {
+  opacity: 75%;
+  max-width: 962px;
+}
+
+.center-screen {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+.custom-form {
+  width: 65%;
+  border-radius: 10px;
+  opacity: 85%;
+  padding: 20px;
+}
+
+.credit-box {
+  position: absolute;
+  border-radius: 10px;
+  color: white;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  padding: 15px;
+  text-align: center;
+  background: rgba(255, 255, 255, 0.35);
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+  backdrop-filter: blur(18.5px);
+  -webkit-backdrop-filter: blur(18.5px);
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+}
+
+.contact-box {
+  position: absolute;
+  border-radius: 10px;
+  color: white;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  padding: 15px;
+  text-align: center;
+  background: rgba(255, 255, 255, 0.55);
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+  backdrop-filter: blur(18.5px);
+  -webkit-backdrop-filter: blur(18.5px);
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+}
+
+.about-us-box {
+  position: absolute;
+  border-radius: 10px;
+  color: white;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  padding: 15px;
+  text-align: center;
+  background: rgba(255, 255, 255, 0.55);
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+  backdrop-filter: blur(18.5px);
+  -webkit-backdrop-filter: blur(18.5px);
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+}
+
+.pricing-palden {
+  max-width: 960px;
+}
+
+section {
+  margin-top: -125px;
+}
+
+.rounded-table {
+  background-color: #f8f9fa;
+  border-radius: 15px;
+  overflow: hidden;
+}
+/* Target the last row and remove its border */
+.custom-table tbody tr:last-child {
+  border-bottom: transparent;
+}

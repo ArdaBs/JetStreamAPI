@@ -1,0 +1,10 @@
+#navbarid.expanded {
+  padding: 30px 7px;
+}
+
+#navbarid {
+  padding: 10px 7px;
+  margin-bottom: 10px;
+  transition: padding 0.3s ease-in-out;
+  position: fixed;
+}

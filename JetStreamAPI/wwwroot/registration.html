@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8" />
+<link rel="stylesheet" href="styles/registration.css">
+<link rel="stylesheet" href="styles/styles.css" />
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet"
+integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous" />
+<script src="js/employeeLogin.js"></script>
+<script src="js/auth.js"></script>
+<title>Registration</title>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg bg-body-tertiary fixed-top expanded" id="navbarid">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="index.html">
+                <img src="Jetstream-Circle-Logo.png" alt="Logo" width="55" height="55">
+            </a>
+            <h2 class="navbar-title"><a class="nav-link" href="index.html">Jetstream - Service</a></h2>
+            <button
+                class="navbar-toggler"
+                type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#navbarNav"
+                aria-controls="navbarNav"
+                aria-expanded="false"
+                aria-label="Toggle navigation"
+            >
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="about-us.html">Über uns</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="buy.html">Online-Anmeldung</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="contact.html">Kontakt</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="credits.html">Credits</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" target="_blank" href="https://localhost:7092/swagger">Swagger-UI <strong>(Backend)</strong></a>
+                    </li>
+                </ul>
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a href="registration.html" class="btn btn-primary" id="loginLink">Login</a>
+                        <button class="btn btn-secondary" id="logoutButton" type="button" style="display: none;">Logout</button>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+  <body>
+    <div class="login-page">
+      <div class="form">
+        <div class="login">
+          <div class="login-header">
+            <h3>LOGIN</h3>
+            <p>Please enter your credentials to login.</p>
+          </div>
+        </div>
+        <form class="login-form">
+          <input type="text" placeholder="username"/>
+          <input type="password" placeholder="password"/>
+          <button>login</button>
+          <p class="message">Not registered? <a target="_blank" href="https://localhost:7092/swagger">Create an account</a></p>
+        </form>
+      </div>
+    </div>
+</body>
+</body>
+</html>

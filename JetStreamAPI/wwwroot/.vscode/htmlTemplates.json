@@ -1,0 +1,14 @@
+{
+    "templates": [
+        {
+            "path": "templates\\navigation.html",
+            "targets": [
+                "buy.html",
+                "about-us.html",
+                "contact.html",
+                "credits.html",
+                "index.html"
+            ]
+        }
+    ]
+}
