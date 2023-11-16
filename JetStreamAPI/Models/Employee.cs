@@ -3,7 +3,6 @@ using System.ComponentModel.DataAnnotations;
 namespace JetStreamAPI.Models
 {
 
-
     public class Employee
     {
         [Key]

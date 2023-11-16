@@ -8,15 +8,19 @@ using Microsoft.EntityFrameworkCore;
 public class RegistrationsController : ControllerBase
 {
     private readonly JetStreamBackendConfiguration _context;
+    private readonly ILogger<EmployeesController> _logger;
 
-    public RegistrationsController(JetStreamBackendConfiguration context)
+    public RegistrationsController(JetStreamBackendConfiguration context, ILogger<EmployeesController> logger)
     {
         _context = context;
+        _logger = logger;
     }
 
     [HttpPost]
     public async Task<IActionResult> CreateServiceOrder([FromBody] ServiceOrderDto serviceOrderDto)
     {
+        _logger.LogInformation("Versuch, einen neuen Serviceauftrag zu erstellen.");
+
         try
         {
             var creationDate = DateTime.UtcNow;
@@ -38,10 +42,12 @@ public class RegistrationsController : ControllerBase
             _context.ServiceOrders.Add(serviceOrder);
             await _context.SaveChangesAsync();
 
+            _logger.LogInformation($"Serviceauftrag erfolgreich erstellt. ID: {serviceOrder.Id}");
             return Ok(new { id = serviceOrder.Id });
         }
-        catch (Exception)
+        catch (Exception ex)
         {
+            _logger.LogError(ex, "Fehler beim Erstellen eines Serviceauftrags.");
             return StatusCode(500, "Ein Fehler ist beim Erstellen des Serviceauftrags aufgetreten");
         }
     }
@@ -63,19 +69,40 @@ public class RegistrationsController : ControllerBase
     [Authorize]
     public async Task<IActionResult> GetAllServiceOrders()
     {
-        var serviceOrders = await _context.ServiceOrders.ToListAsync();
-        return Ok(serviceOrders);
+        _logger.LogInformation("Anfrage zum Abrufen aller Serviceaufträge erhalten.");
+
+        try
+        {
+            var serviceOrders = await _context.ServiceOrders.ToListAsync();
+            _logger.LogInformation($"Abfrage erfolgreich. {serviceOrders.Count} Serviceaufträge abgerufen.");
+            return Ok(serviceOrders);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Fehler beim Abrufen der Serviceaufträge.");
+            return StatusCode(500, "Ein Fehler ist beim Abrufen der Serviceaufträge aufgetreten.");
+        }
     }
+
 
     // GET: api/serviceorders/search?name=JohnDoe
     [HttpGet("search")]
     [Authorize]
     public async Task<IActionResult> SearchServiceOrdersByName([FromQuery] string name)
     {
-        var serviceOrders = await _context.ServiceOrders
-                                          .Where(so => so.CustomerName.Contains(name))
-                                          .ToListAsync();
-        return Ok(serviceOrders);
+        try
+        {
+            var serviceOrders = await _context.ServiceOrders
+                                              .Where(so => so.CustomerName.Contains(name))
+                                              .ToListAsync();
+            _logger.LogInformation($"Gefunden {serviceOrders.Count} Serviceaufträge mit Namen: {name}");
+            return Ok(serviceOrders);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, $"Fehler bei der Suche nach Serviceaufträgen mit Namen: {name}");
+            return StatusCode(500, "Ein Fehler ist aufgetreten beim Abrufen der Serviceaufträge.");
+        }
     }
 
     // PATCH: api/registrations/5
@@ -83,16 +110,26 @@ public class RegistrationsController : ControllerBase
     [Authorize]
     public async Task<IActionResult> UpdateServiceOrderComment(int id, [FromBody] UpdateCommentDto updateCommentDto)
     {
-        var serviceOrder = await _context.ServiceOrders.FindAsync(id);
-        if (serviceOrder == null)
+        try
         {
-            return NotFound();
+            var serviceOrder = await _context.ServiceOrders.FindAsync(id);
+            if (serviceOrder == null)
+            {
+                _logger.LogWarning($"Serviceauftrag mit ID {id} nicht gefunden.");
+                return NotFound();
+            }
+
+            serviceOrder.Comments = updateCommentDto.Comment;
+            await _context.SaveChangesAsync();
+            _logger.LogInformation($"Kommentar für Serviceauftrag ID {id} aktualisiert.");
+
+            return NoContent();
         }
-
-        serviceOrder.Comments = updateCommentDto.Comment;
-        await _context.SaveChangesAsync();
-
-        return NoContent();
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, $"Fehler bei der Aktualisierung des Kommentars für Serviceauftrag ID {id}.");
+            return StatusCode(500, "Ein Fehler ist aufgetreten beim Aktualisieren des Serviceauftrags.");
+        }
     }
 
     // DELETE: api/registrations/5
@@ -100,16 +137,26 @@ public class RegistrationsController : ControllerBase
     [Authorize]
     public async Task<IActionResult> DeleteServiceOrder(int id)
     {
-        var serviceOrder = await _context.ServiceOrders.FindAsync(id);
-        if (serviceOrder == null)
+        try
         {
-            return NotFound();
+            var serviceOrder = await _context.ServiceOrders.FindAsync(id);
+            if (serviceOrder == null)
+            {
+                _logger.LogWarning($"Serviceauftrag mit ID {id} nicht gefunden.");
+                return NotFound();
+            }
+
+            _context.ServiceOrders.Remove(serviceOrder);
+            await _context.SaveChangesAsync();
+            _logger.LogInformation($"Serviceauftrag mit ID {id} wurde gelöscht.");
+
+            return NoContent();
         }
-
-        _context.ServiceOrders.Remove(serviceOrder);
-        await _context.SaveChangesAsync();
-
-        return NoContent();
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, $"Fehler beim Löschen des Serviceauftrags mit ID {id}.");
+            return StatusCode(500, "Ein Fehler ist aufgetreten beim Löschen des Serviceauftrags.");
+        }
     }
 
     // DELETE: api/registrations
@@ -117,10 +164,19 @@ public class RegistrationsController : ControllerBase
     [Authorize]
     public async Task<IActionResult> DeleteAllServiceOrders()
     {
-        _context.ServiceOrders.RemoveRange(_context.ServiceOrders);
-        await _context.SaveChangesAsync();
+        try
+        {
+            _context.ServiceOrders.RemoveRange(_context.ServiceOrders);
+            await _context.SaveChangesAsync();
+            _logger.LogInformation("Alle Serviceaufträge wurden gelöscht.");
 
-        return NoContent();
+            return NoContent();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Fehler beim Löschen aller Serviceaufträge.");
+            return StatusCode(500, "Ein Fehler ist aufgetreten beim Löschen aller Serviceaufträge.");
+        }
     }
 
     // GET: api/serviceorders
@@ -128,32 +184,56 @@ public class RegistrationsController : ControllerBase
     [Authorize]
     public async Task<IActionResult> GetAllServiceOrders([FromQuery] string priority)
     {
-        IQueryable<ServiceOrder> query = _context.ServiceOrders;
-
-        if (!string.IsNullOrEmpty(priority))
+        try
         {
-            // Filter Service Orders based on priority
-            query = query.Where(so => so.Priority.ToLower() == priority.ToLower());
-        }
+            IQueryable<ServiceOrder> query = _context.ServiceOrders;
 
-        var serviceOrders = await query.ToListAsync();
-        return Ok(serviceOrders);
+            if (!string.IsNullOrEmpty(priority))
+            {
+                // Filter Service Orders based on priority
+                query = query.Where(so => so.Priority.ToLower() == priority.ToLower());
+                _logger.LogInformation($"Serviceaufträge werden nach Priorität gefiltert: {priority}.");
+            }
+            else
+            {
+                _logger.LogInformation("Alle Serviceaufträge werden abgerufen.");
+            }
+
+            var serviceOrders = await query.ToListAsync();
+            return Ok(serviceOrders);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Fehler beim Abrufen von Serviceaufträgen.");
+            return StatusCode(500, "Ein Fehler ist aufgetreten beim Abrufen von Serviceaufträgen.");
+        }
     }
 
     [HttpPatch("{id}/status")]
     [Authorize]
     public async Task<IActionResult> UpdateOrderStatus(int id, [FromBody] UpdateOrderStatusDto updateStatusDto)
     {
-        var order = await _context.ServiceOrders.FindAsync(id);
-        if (order == null)
+        try
         {
-            return NotFound();
+            var order = await _context.ServiceOrders.FindAsync(id);
+            if (order == null)
+            {
+                _logger.LogWarning($"Serviceauftrag mit ID {id} nicht gefunden.");
+                return NotFound();
+            }
+
+            _logger.LogInformation($"Aktualisiere den Status des Serviceauftrags mit ID {id} auf {updateStatusDto.Status}.");
+            order.Status = updateStatusDto.Status;
+            await _context.SaveChangesAsync();
+
+            _logger.LogInformation($"Serviceauftrag mit ID {id} erfolgreich auf {updateStatusDto.Status} aktualisiert.");
+            return NoContent();
         }
-
-        order.Status = updateStatusDto.Status;
-        await _context.SaveChangesAsync();
-
-        return NoContent();
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, $"Fehler beim Aktualisieren des Status für Serviceauftrag mit ID {id}.");
+            return StatusCode(500, "Ein Fehler ist aufgetreten beim Aktualisieren des Serviceauftrags.");
+        }
     }
 
 
