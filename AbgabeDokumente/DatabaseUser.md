@@ -50,6 +50,22 @@ CREATE USER [restricted_user] FOR LOGIN [restricted_user_login];
 GRANT SELECT, INSERT, UPDATE ON ServiceOrders TO [restricted_user];
 ```
 
+### Mitarbeiter hinzufügen
+```sql
+INSERT INTO Employees (Username, Password, IsLocked, FailedLoginAttempts)
+VALUES 
+('Arda', '1234', 0, 0),
+('Satoru', '1234', 0, 0),
+('Smith', '1234', 0, 0),
+('Lukas', '1234', 0, 0),
+('Daniel', '1234', 0, 0),
+('Tobey', '1234', 0, 0),
+('Micheal', '1234', 0, 0),
+('Brian', '1234', 0, 0),
+('Alim', '1234', 0, 0),
+('Sven', '1234', 0, 0);
+```
+
 ### Konfiguration in `appsettings.json`
 ```json
 {
