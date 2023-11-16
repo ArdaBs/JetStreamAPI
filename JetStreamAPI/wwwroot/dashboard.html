@@ -14,6 +14,17 @@
   <body>
     <div class="container mt-5">
       <h2>Service Orders Dashboard</h2>
+      <div class="mb-3">
+        <label for="prioritySelect" class="form-label"
+          >Priorität auswählen:</label
+        >
+        <select class="form-select" id="prioritySelect">
+          <option value="all">Alle</option>
+          <option value="low">Niedrig</option>
+          <option value="standard">Standard</option>
+          <option value="express">Hoch</option>
+        </select>
+      </div>
       <table class="table">
         <thead>
           <tr>
@@ -43,12 +54,24 @@
     <script>
       // JavaScript to fetch and display orders
       document.addEventListener("DOMContentLoaded", () => {
+        const prioritySelect = document.getElementById("prioritySelect");
         fetchServiceOrders();
 
-        // Function to fetch service orders and populate the table
-        async function fetchServiceOrders() {
+        prioritySelect.addEventListener("change", () => {
+          const selectedPriority = prioritySelect.value;
+          console.log("Selected priority:", selectedPriority);
+          fetchServiceOrders(selectedPriority);
+        });
+
+        async function fetchServiceOrders(priority = "all") {
           try {
-            const response = await fetch("/api/registrations", {
+            let url = "/api/registrations"; // https://localhost:7092/api/Registrations/ByPriority?priority=low
+            if (priority !== "all") {
+              url += `/ByPriority?priority=${priority}`;
+              console.log("Fetching URL:", url);
+            }
+
+            const response = await fetch(url, {
               method: "GET",
               headers: {
                 Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -62,12 +85,13 @@
             }
 
             const orders = await response.json();
+            console.log("Fetched orders:", orders);
+
             const ordersTableBody = document.getElementById(
               "serviceOrdersTableBody"
             );
-            ordersTableBody.innerHTML = ""; // Clear the table body
+            ordersTableBody.innerHTML = "";
 
-            // Populate table with orders
             orders.forEach((order) => {
               const row = document.createElement("tr");
               row.innerHTML = `
@@ -101,10 +125,7 @@
 
             attachEditEventListeners();
           } catch (error) {
-            console.error(
-              "There has been a problem with your fetch operation:",
-              error
-            );
+            console.error("Error:", error);
           }
         }
 
@@ -113,27 +134,25 @@
             btn.addEventListener("click", (e) => {
               const orderId = e.target.getAttribute("data-id");
               const parentRow = e.target.closest("tr");
-              const commentCell = parentRow.querySelector(".comment-cell"); // Stellen Sie sicher, dass Sie eine Klasse 'comment-cell' in Ihrer Tabellenzelle haben.
+              const commentCell = parentRow.querySelector(".comment-cell");
 
-              // Ersetzen Sie den Text in der Kommentarzelle durch ein Eingabefeld
               const originalContent = commentCell.innerText;
               commentCell.innerHTML = `<input type="text" value="${originalContent}" class="form-control comment-input">`;
 
-              // Zeigen Sie die Speicher- und Abbrechen-Tasten an
               parentRow.querySelector(".save-btn").classList.remove("d-none");
               parentRow.querySelector(".cancel-btn").classList.remove("d-none");
-              // Verstecken Sie die Bearbeiten-Taste
+
               e.target.classList.add("d-none");
             });
           });
 
-          // Speicher-Button-Funktionalität
+          // Save button function
           document.querySelectorAll(".save-btn").forEach((btn) => {
             btn.addEventListener("click", async (e) => {
               const orderId = e.target.getAttribute("data-id");
               const parentRow = e.target.closest("tr");
               const commentInput =
-                parentRow.querySelector(".comment-input").value; // Hier wird der Wert aus dem Eingabefeld gelesen
+                parentRow.querySelector(".comment-input").value;
 
               try {
                 const response = await fetch("/api/registrations/" + orderId, {
@@ -149,11 +168,10 @@
                   throw new Error("Network response was not ok");
                 }
 
-                // Nach erfolgreichem Speichern aktualisieren Sie den Text der Kommentarzelle
                 const commentCell = parentRow.querySelector("td:nth-child(9)");
                 commentCell.innerText = commentInput;
 
-                // Verstecken Sie die Speicher- und Abbrechen-Tasten und zeigen Sie die Bearbeiten-Taste wieder an
+                // Hide save and cancel button
                 parentRow.querySelector(".edit-btn").classList.remove("d-none");
                 parentRow.querySelector(".save-btn").classList.add("d-none");
                 parentRow.querySelector(".cancel-btn").classList.add("d-none");
@@ -164,11 +182,11 @@
             });
           });
 
-          // Abbrechen-Button-Funktionalität
+          // cancel function
           document.querySelectorAll(".cancel-btn").forEach((btn) => {
             btn.addEventListener("click", (e) => {
               const parentRow = e.target.closest("tr");
-              fetchServiceOrders(); // Dies setzt die Reihe auf den ursprünglichen Zustand zurück
+              fetchServiceOrders();
             });
           });
         }

@@ -122,6 +122,23 @@ public class RegistrationsController : ControllerBase
         return NoContent();
     }
 
+    // GET: api/serviceorders
+    [HttpGet("ByPriority")]
+    [Authorize]
+    public async Task<IActionResult> GetAllServiceOrders([FromQuery] string priority)
+    {
+        IQueryable<ServiceOrder> query = _context.ServiceOrders;
+
+        if (!string.IsNullOrEmpty(priority))
+        {
+            // Filter Service Orders based on priority
+            query = query.Where(so => so.Priority.ToLower() == priority.ToLower());
+        }
+
+        var serviceOrders = await query.ToListAsync();
+        return Ok(serviceOrders);
+    }
+
 }
 
 // DTO for update of comments
