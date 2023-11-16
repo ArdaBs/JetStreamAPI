@@ -31,7 +31,8 @@ public class RegistrationsController : ControllerBase
                 ServiceType = serviceOrderDto.Service,
                 CreationDate = creationDate,
                 PickupDate = pickupDate,
-                Comments = serviceOrderDto.Comment
+                Comments = serviceOrderDto.Comment,
+                Status = serviceOrderDto.Status
             };
 
             _context.ServiceOrders.Add(serviceOrder);
@@ -139,6 +140,29 @@ public class RegistrationsController : ControllerBase
         return Ok(serviceOrders);
     }
 
+    [HttpPatch("{id}/status")]
+    [Authorize]
+    public async Task<IActionResult> UpdateOrderStatus(int id, [FromBody] UpdateOrderStatusDto updateStatusDto)
+    {
+        var order = await _context.ServiceOrders.FindAsync(id);
+        if (order == null)
+        {
+            return NotFound();
+        }
+
+        order.Status = updateStatusDto.Status;
+        await _context.SaveChangesAsync();
+
+        return NoContent();
+    }
+
+
+}
+
+// DTO for status
+public class UpdateOrderStatusDto
+{
+    public string Status { get; set; }
 }
 
 // DTO for update of comments
@@ -158,4 +182,5 @@ public class ServiceOrderDto
     public DateTime CreateDate { get; set; }
     public DateTime PickupDate { get; set; }
     public string Comment { get; set; }
+    public string Status { get; set; }
 }

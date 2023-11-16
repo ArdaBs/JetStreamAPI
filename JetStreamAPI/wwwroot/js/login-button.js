@@ -36,7 +36,8 @@ document.addEventListener("DOMContentLoaded", function() {
       service: service,
       create_date: creationDate.toISOString(), 
       pickup_date: pickupDate.toISOString(),
-      comment: comment
+      comment: comment,
+      status : "Offen"
     };
 
     console.log('Daten, die gesendet werden:', data);
@@ -56,10 +57,8 @@ document.addEventListener("DOMContentLoaded", function() {
         throw new Error('Fehler beim Senden der Daten. Antwort des Servers: ' + JSON.stringify(json));
       }
 
-      // Ausgabe in der Konsole
       console.log('Serverantwort:', json);
 
-      // Ausgabe in einem Alert
       alert('Serverantwort: ' + JSON.stringify(json));
 
       successAlert.classList.remove("d-none");

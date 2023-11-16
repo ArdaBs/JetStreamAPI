@@ -36,6 +36,7 @@
             <th scope="col">Service Type</th>
             <th scope="col">Creation Date</th>
             <th scope="col">Pickup Date</th>
+            <th scope="col">Status</th>
             <th scope="col">Comments</th>
             <th scope="col">Actions</th>
           </tr>
@@ -95,37 +96,81 @@
             orders.forEach((order) => {
               const row = document.createElement("tr");
               row.innerHTML = `
-                            <th scope="row">${order.id}</th>
-                            <td>${order.customerName}</td>
-                            <td>${order.email}</td>
-                            <td>${order.phoneNumber}</td>
-                            <td>${order.priority}</td>
-                            <td>${order.serviceType}</td>
-                            <td>${new Date(
-                              order.creationDate
-                            ).toLocaleDateString()}</td>
-                            <td>${new Date(
-                              order.pickupDate
-                            ).toLocaleDateString()}</td>
-                            <td class="comment-cell">${order.comments}</td>
-                            <td>
-                                <button class="btn btn-primary btn-sm edit-btn" data-id="${
-                                  order.id
-                                }">Edit</button>
-                                <button class="btn btn-success btn-sm save-btn d-none" data-id="${
-                                  order.id
-                                }">Save</button>
-                                <button class="btn btn-secondary btn-sm cancel-btn d-none" data-id="${
-                                  order.id
-                                }">Cancel</button>
-                            </td>
-                        `;
+    <th scope="row">${order.id}</th>
+    <td>${order.customerName}</td>
+    <td>${order.email}</td>
+    <td>${order.phoneNumber}</td>
+    <td>${order.priority}</td>
+    <td>${order.serviceType}</td>
+    <td>${new Date(order.creationDate).toLocaleDateString()}</td>
+    <td>${new Date(order.pickupDate).toLocaleDateString()}</td>
+    <td>
+      <select class="form-control status-select">
+        <option value="Offen" ${
+          order.status === "Offen" ? "selected" : ""
+        }>Offen</option>
+        <option value="InBearbeitung" ${
+          order.status === "InBearbeitung" ? "selected" : ""
+        }>In Bearbeitung</option>
+        <option value="Abgeschlossen" ${
+          order.status === "Abgeschlossen" ? "selected" : ""
+        }>Abgeschlossen</option>
+      </select>
+    </td>
+    <td class="comment-cell">${order.comments}</td>
+    <td>
+      <button class="btn btn-primary btn-sm edit-btn" data-id="${
+        order.id
+      }">Edit</button>
+      <button class="btn btn-success btn-sm save-btn d-none" data-id="${
+        order.id
+      }">Save</button>
+      <button class="btn btn-secondary btn-sm cancel-btn d-none" data-id="${
+        order.id
+      }">Cancel</button>
+    </td>
+  `;
               ordersTableBody.appendChild(row);
+
+              const statusSelect = row.querySelector(".status-select");
+              statusSelect.value = order.status;
+
+              // Eventlistener for status
+              statusSelect.addEventListener("change", (e) => {
+                const newStatus = e.target.value;
+                updateOrderStatus(order.id, newStatus);
+              });
             });
 
             attachEditEventListeners();
           } catch (error) {
             console.error("Error:", error);
+          }
+        }
+
+        // Function to update status
+        async function updateOrderStatus(orderId, newStatus) {
+          try {
+            const response = await fetch(
+              `/api/registrations/${orderId}/status`,
+              {
+                method: "PATCH",
+                headers: {
+                  "Content-Type": "application/json",
+                  Authorization: `Bearer ${localStorage.getItem("token")}`,
+                },
+                body: JSON.stringify({ Status: newStatus }),
+              }
+            );
+
+            if (!response.ok) {
+              throw new Error("Fehler beim Aktualisieren des Status");
+            }
+          } catch (error) {
+            console.error("Error:", error);
+            alert(
+              "Fehler beim Aktualisieren des Status. Bitte versuchen Sie es erneut."
+            );
           }
         }
 
@@ -168,7 +213,7 @@
                   throw new Error("Network response was not ok");
                 }
 
-                const commentCell = parentRow.querySelector("td:nth-child(9)");
+                const commentCell = parentRow.querySelector("td:nth-child(10)");
                 commentCell.innerText = commentInput;
 
                 // Hide save and cancel button

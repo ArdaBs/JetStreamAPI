@@ -3,7 +3,8 @@ using JetStreamAPI;
 using System.ComponentModel.DataAnnotations;
 
 namespace JetStreamAPI.Models
-{ 
+{
+
     public class ServiceOrder
     {
         [Key]
@@ -34,6 +35,8 @@ namespace JetStreamAPI.Models
         public DateTime PickupDate { get; set; }
 
         // for later configuration
-        public string Comments { get; set; } = "...";
+        public string Comments { get; set; } = "";
+
+        public string Status { get; set; } = "Offen";
     }
 }
