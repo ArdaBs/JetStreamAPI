@@ -19,7 +19,18 @@ public class EmployeesController : ControllerBase
         _logger = logger;
     }
 
+    /// <summary>
+    /// Creates a new employee in the system.
+    /// </summary>
+    /// <param name="createEmployeeDto">Data for creating a new employee.</param>
+    /// <returns>Details of the created employee.</returns>
+    /// <response code="200">Returns the details of the newly created employee.</response>
+    /// <response code="400">Returned if the request is invalid or the username is already taken.</response>
+    /// <response code="500">Returned if an internal server error occurs.</response>
     [HttpPost("create")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> CreateEmployee([FromBody] CreateEmployeeDto createEmployeeDto)
     {
         if (!ModelState.IsValid)
@@ -62,7 +73,20 @@ public class EmployeesController : ControllerBase
     }
 
 
+    /// <summary>
+    /// Allows a user to log in to the system.
+    /// </summary>
+    /// <param name="loginDto">Login credentials of the user.</param>
+    /// <returns>A token on successful login.</returns>
+    /// <response code="200">Returns a token if the login is successful.</response>
+    /// <response code="400">Returned if the request is invalid.</response>
+    /// <response code="401">Returned if the login credentials are invalid or the account is locked.</response>
+    /// <response code="500">Returned if an internal server error occurs.</response>
     [HttpPost("login")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> Login([FromBody] LoginDto loginDto)
     {
         if (!ModelState.IsValid)
@@ -149,10 +173,23 @@ public class EmployeesController : ControllerBase
 
         _logger.LogInformation($"Mitarbeiter {username} wurde erfolgreich entsperrt.");
         return Ok($"Mitarbeiter {username} wurde erfolgreich entsperrt.");
-    }   
+    }
 
+    /// <summary>
+    /// Validates the current user's token.
+    /// </summary>
+    /// <remarks>
+    /// This API endpoint is used to verify if the current user's token is still valid.
+    /// It's particularly useful for client applications to check the authentication 
+    /// status of the user, ensuring that their session has not expired.
+    /// </remarks>
+    /// <returns>A confirmation message if the token is valid.</returns>
+    /// <response code="200">Returns a success message if the token is valid.</response>
+    /// <response code="401">Returned if the token is invalid, expired, or not provided.</response>
     [HttpGet("validate")]
     [Authorize]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     public IActionResult ValidateToken()
     {
         return Ok(new { Message = "Token is valid." });
