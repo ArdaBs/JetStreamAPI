@@ -149,8 +149,7 @@ public class EmployeesController : ControllerBase
 
         _logger.LogInformation($"Mitarbeiter {username} wurde erfolgreich entsperrt.");
         return Ok($"Mitarbeiter {username} wurde erfolgreich entsperrt.");
-    }
-
+    }   
 
     [HttpGet("validate")]
     [Authorize]
