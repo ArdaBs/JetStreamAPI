@@ -122,6 +122,9 @@
       <button class="btn btn-primary btn-sm edit-btn" data-id="${
         order.id
       }">Edit</button>
+      <button class="btn btn-danger btn-sm delete-btn" data-id="${
+        order.id
+      }">Löschen</button>
       <button class="btn btn-success btn-sm save-btn d-none" data-id="${
         order.id
       }">Save</button>
@@ -142,7 +145,7 @@
               });
             });
 
-            attachEditEventListeners();
+            attachEditAndDeleteEventListeners();
           } catch (error) {
             console.error("Error:", error);
           }
@@ -174,8 +177,38 @@
           }
         }
 
-        function attachEditEventListeners() {
-          document.querySelectorAll(".edit-btn").forEach((btn) => {
+        // function to delete
+        async function deleteOrder(orderId) {
+          if (
+            confirm(
+              `Möchten Sie den Auftrag mit der ID ${orderId} wirklich löschen?`
+            )
+          ) {
+            try {
+              const response = await fetch(`/api/registrations/${orderId}`, {
+                method: "DELETE",
+                headers: {
+                  Authorization: `Bearer ${localStorage.getItem("token")}`,
+                },
+              });
+
+              if (!response.ok) {
+                throw new Error("Fehler beim Löschen des Auftrags");
+              }
+
+              // refres
+              fetchServiceOrders();
+            } catch (error) {
+              console.error("Error:", error);
+              alert(
+                "Fehler beim Löschen des Auftrags. Bitte versuchen Sie es erneut."
+              );
+            }
+          }
+        }
+
+        function attachEditAndDeleteEventListeners() {
+    document.querySelectorAll(".edit-btn").forEach((btn) => {
             btn.addEventListener("click", (e) => {
               const orderId = e.target.getAttribute("data-id");
               const parentRow = e.target.closest("tr");
@@ -234,6 +267,14 @@
               fetchServiceOrders();
             });
           });
+
+          //delete eventlistener
+          document.querySelectorAll(".delete-btn").forEach((btn) => {
+          btn.addEventListener("click", (e) => {
+        const orderId = e.target.getAttribute("data-id");
+        deleteOrder(orderId);
+      });
+    });
         }
       });
     </script>
