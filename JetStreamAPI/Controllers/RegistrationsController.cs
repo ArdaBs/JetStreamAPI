@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations;
 
 [ApiController]
 [Route("api/[controller]")]
@@ -19,6 +20,11 @@ public class RegistrationsController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> CreateServiceOrder([FromBody] ServiceOrderDto serviceOrderDto)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         _logger.LogInformation("Versuch, einen neuen Serviceauftrag zu erstellen.");
 
         try
@@ -69,6 +75,11 @@ public class RegistrationsController : ControllerBase
     [Authorize]
     public async Task<IActionResult> GetAllServiceOrders()
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         _logger.LogInformation("Anfrage zum Abrufen aller Serviceaufträge erhalten.");
 
         try
@@ -90,6 +101,11 @@ public class RegistrationsController : ControllerBase
     [Authorize]
     public async Task<IActionResult> SearchServiceOrdersByName([FromQuery] string name)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         try
         {
             var serviceOrders = await _context.ServiceOrders
@@ -110,6 +126,11 @@ public class RegistrationsController : ControllerBase
     [Authorize]
     public async Task<IActionResult> UpdateServiceOrderComment(int id, [FromBody] UpdateCommentDto updateCommentDto)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         try
         {
             var serviceOrder = await _context.ServiceOrders.FindAsync(id);
@@ -137,6 +158,11 @@ public class RegistrationsController : ControllerBase
     [Authorize]
     public async Task<IActionResult> DeleteServiceOrder(int id)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         try
         {
             var serviceOrder = await _context.ServiceOrders.FindAsync(id);
@@ -164,6 +190,11 @@ public class RegistrationsController : ControllerBase
     [Authorize]
     public async Task<IActionResult> DeleteAllServiceOrders()
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         try
         {
             _context.ServiceOrders.RemoveRange(_context.ServiceOrders);
@@ -179,11 +210,16 @@ public class RegistrationsController : ControllerBase
         }
     }
 
-    // GET: api/serviceorders
+    // GET: api/registrations/ByPriority
     [HttpGet("ByPriority")]
     [Authorize]
     public async Task<IActionResult> GetAllServiceOrders([FromQuery] string priority)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         try
         {
             IQueryable<ServiceOrder> query = _context.ServiceOrders;
@@ -213,6 +249,21 @@ public class RegistrationsController : ControllerBase
     [Authorize]
     public async Task<IActionResult> UpdateOrderStatus(int id, [FromBody] UpdateOrderStatusDto updateStatusDto)
     {
+        // Validation
+        var gültigeStatus = new List<string> { "Offen", "InBearbeitung", "Abgeschlossen" };
+
+        if (!ModelState.IsValid)
+        {
+            _logger.LogWarning("Übergebene Daten ungültig.");
+            return BadRequest(ModelState);
+        }
+
+        if (!gültigeStatus.Contains(updateStatusDto.Status))
+        {
+            _logger.LogWarning($"Ungültiger Status: {updateStatusDto.Status}.");
+            return BadRequest($"Ungültiger Status: {updateStatusDto.Status}.");
+        }
+
         try
         {
             var order = await _context.ServiceOrders.FindAsync(id);
@@ -236,7 +287,6 @@ public class RegistrationsController : ControllerBase
         }
     }
 
-
 }
 
 // DTO for status
@@ -254,13 +304,29 @@ public class UpdateCommentDto
 // DTO to get data
 public class ServiceOrderDto
 {
+    [Required]
+    [StringLength(100)]
     public string Name { get; set; }
+    [Required]
+    [EmailAddress]
     public string Email { get; set; }
+
+    [Required]
+    [Phone]
     public string Phone { get; set; }
+
+    [Required]
     public string Priority { get; set; }
+
+    [Required]
     public string Service { get; set; }
-    public DateTime CreateDate { get; set; }
+
+    [Required]
+    public DateTime CreationDate { get; set; }
+
+    [Required]
     public DateTime PickupDate { get; set; }
+
     public string Comment { get; set; }
     public string Status { get; set; }
 }

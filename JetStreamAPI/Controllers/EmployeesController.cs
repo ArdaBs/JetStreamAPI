@@ -22,6 +22,11 @@ public class EmployeesController : ControllerBase
     [HttpPost("create")]
     public async Task<IActionResult> CreateEmployee([FromBody] CreateEmployeeDto createEmployeeDto)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         _logger.LogInformation($"Versuch, einen neuen Benutzer zu erstellen: {createEmployeeDto.Username}");
 
         // check if user already exists
@@ -60,6 +65,11 @@ public class EmployeesController : ControllerBase
     [HttpPost("login")]
     public async Task<IActionResult> Login([FromBody] LoginDto loginDto)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         _logger.LogInformation($"Loginversuch für Benutzer {loginDto.Username}");
 
         var employee = await _context.Employees
@@ -109,6 +119,11 @@ public class EmployeesController : ControllerBase
     [Authorize]
     public async Task<IActionResult> UnlockEmployee(string username)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         _logger.LogInformation($"Versuch, Benutzer {username} zu entsperren.");
 
         var employeeToUnlock = await _context.Employees
