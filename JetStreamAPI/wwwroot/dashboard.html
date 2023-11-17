@@ -49,6 +49,9 @@
                 <li class="nav-item">
                     <a class="nav-link" target="_blank" href="https://localhost:7092/swagger">Swagger-UI <strong>(Backend)</strong></a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="dashboard.html">Dashboard</a>
+                </li>
             </ul>
             <ul class="navbar-nav ms-auto">
                 <li class="nav-item">
@@ -103,230 +106,228 @@
       crossorigin="anonymous"
     ></script>
     <script>
-      // JavaScript to fetch and display orders
-      document.addEventListener("DOMContentLoaded", () => {
-        const prioritySelect = document.getElementById("prioritySelect");
-        fetchServiceOrders();
-
-        prioritySelect.addEventListener("change", () => {
-          const selectedPriority = prioritySelect.value;
-          console.log("Selected priority:", selectedPriority);
-          fetchServiceOrders(selectedPriority);
-        });
-
-        async function fetchServiceOrders(priority = "all") {
-          try {
-            let url = "/api/registrations"; // https://localhost:7092/api/Registrations/ByPriority?priority=low
-            if (priority !== "all") {
-              url += `/ByPriority?priority=${priority}`;
-              console.log("Fetching URL:", url);
+    document.addEventListener("DOMContentLoaded", () => {
+      const prioritySelect = document.getElementById("prioritySelect");
+      fetchServiceOrders();
+  
+      prioritySelect.addEventListener("change", () => {
+        const selectedPriority = prioritySelect.value;
+        console.log("Selected priority:", selectedPriority);
+        fetchServiceOrders(selectedPriority);
+      });
+  
+      async function fetchServiceOrders(priority = "all") {
+        try {
+          let url = "/api/registrations"; // https://localhost:7092/api/Registrations/ByPriority?priority=low
+          if (priority !== "all") {
+            url += `/ByPriority?priority=${priority}`;
+            console.log("Fetching URL:", url);
+          }
+  
+          const response = await fetch(url, {
+            method: "GET",
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+          });
+  
+          if (!response.ok) {
+            throw new Error(
+              "Network response was not ok " + response.statusText
+            );
+          }
+  
+          const orders = await response.json();
+          console.log("Fetched orders:", orders);
+  
+          const ordersTableBody = document.getElementById(
+            "serviceOrdersTableBody"
+          );
+          ordersTableBody.innerHTML = "";
+  
+          orders.forEach((order) => {
+            const row = document.createElement("tr");
+            row.innerHTML = `
+  <th scope="row">${order.id}</th>
+  <td>${order.customerName}</td>
+  <td>${order.email}</td>
+  <td>${order.phoneNumber}</td>
+  <td>${order.priority}</td>
+  <td>${order.serviceType.name}</td>
+  <td>${new Date(order.creationDate).toLocaleDateString()}</td>
+  <td>${new Date(order.pickupDate).toLocaleDateString()}</td>
+  <td>
+    <select class="form-control status-select">
+      <option value="Offen" ${
+        order.status === "Offen" ? "selected" : ""
+      }>Offen</option>
+      <option value="InBearbeitung" ${
+        order.status === "InBearbeitung" ? "selected" : ""
+      }>In Bearbeitung</option>
+      <option value="Abgeschlossen" ${
+        order.status === "Abgeschlossen" ? "selected" : ""
+      }>Abgeschlossen</option>
+    </select>
+  </td>
+  <td class="comment-cell">${order.comments}</td>
+  <td>
+    <button class="btn btn-primary btn-sm edit-btn" data-id="${
+      order.id
+    }">Edit</button>
+    <button class="btn btn-danger btn-sm delete-btn" data-id="${
+      order.id
+    }">Löschen</button>
+    <button class="btn btn-success btn-sm save-btn d-none" data-id="${
+      order.id
+    }">Save</button>
+    <button class="btn btn-secondary btn-sm cancel-btn d-none" data-id="${
+      order.id
+    }">Cancel</button>
+  </td>
+  `;
+            ordersTableBody.appendChild(row);
+  
+            const statusSelect = row.querySelector(".status-select");
+            statusSelect.value = order.status;
+  
+            // Eventlistener for status
+            statusSelect.addEventListener("change", (e) => {
+              const newStatus = e.target.value;
+              updateOrderStatus(order.id, newStatus);
+            });
+          });
+  
+          attachEditAndDeleteEventListeners();
+        } catch (error) {
+          console.error("Error:", error);
+        }
+      }
+  
+      // Function to update status
+      async function updateOrderStatus(orderId, newStatus) {
+        try {
+          const response = await fetch(
+            `/api/registrations/${orderId}/status`,
+            {
+              method: "PATCH",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${localStorage.getItem("token")}`,
+              },
+              body: JSON.stringify({ Status: newStatus }),
             }
-
-            const response = await fetch(url, {
-              method: "GET",
+          );
+  
+          if (!response.ok) {
+            throw new Error("Fehler beim Aktualisieren des Status");
+          }
+        } catch (error) {
+          console.error("Error:", error);
+          alert(
+            "Fehler beim Aktualisieren des Status. Bitte versuchen Sie es erneut."
+          );
+        }
+      }
+  
+      // function to delete
+      async function deleteOrder(orderId) {
+        if (
+          confirm(
+            `Möchten Sie den Auftrag mit der ID ${orderId} wirklich löschen?`
+          )
+        ) {
+          try {
+            const response = await fetch(`/api/registrations/${orderId}`, {
+              method: "DELETE",
               headers: {
                 Authorization: `Bearer ${localStorage.getItem("token")}`,
               },
             });
-
+  
             if (!response.ok) {
-              throw new Error(
-                "Network response was not ok " + response.statusText
-              );
+              throw new Error("Fehler beim Löschen des Auftrags");
             }
-
-            const orders = await response.json();
-            console.log("Fetched orders:", orders);
-
-            const ordersTableBody = document.getElementById(
-              "serviceOrdersTableBody"
-            );
-            ordersTableBody.innerHTML = "";
-
-            orders.forEach((order) => {
-              const row = document.createElement("tr");
-              row.innerHTML = `
-    <th scope="row">${order.id}</th>
-    <td>${order.customerName}</td>
-    <td>${order.email}</td>
-    <td>${order.phoneNumber}</td>
-    <td>${order.priority}</td>
-    <td>${order.serviceType.name}</td>
-    <td>${new Date(order.creationDate).toLocaleDateString()}</td>
-    <td>${new Date(order.pickupDate).toLocaleDateString()}</td>
-    <td>
-      <select class="form-control status-select">
-        <option value="Offen" ${
-          order.status === "Offen" ? "selected" : ""
-        }>Offen</option>
-        <option value="InBearbeitung" ${
-          order.status === "InBearbeitung" ? "selected" : ""
-        }>In Bearbeitung</option>
-        <option value="Abgeschlossen" ${
-          order.status === "Abgeschlossen" ? "selected" : ""
-        }>Abgeschlossen</option>
-      </select>
-    </td>
-    <td class="comment-cell">${order.comments}</td>
-    <td>
-      <button class="btn btn-primary btn-sm edit-btn" data-id="${
-        order.id
-      }">Edit</button>
-      <button class="btn btn-danger btn-sm delete-btn" data-id="${
-        order.id
-      }">Löschen</button>
-      <button class="btn btn-success btn-sm save-btn d-none" data-id="${
-        order.id
-      }">Save</button>
-      <button class="btn btn-secondary btn-sm cancel-btn d-none" data-id="${
-        order.id
-      }">Cancel</button>
-    </td>
-  `;
-              ordersTableBody.appendChild(row);
-
-              const statusSelect = row.querySelector(".status-select");
-              statusSelect.value = order.status;
-
-              // Eventlistener for status
-              statusSelect.addEventListener("change", (e) => {
-                const newStatus = e.target.value;
-                updateOrderStatus(order.id, newStatus);
-              });
-            });
-
-            attachEditAndDeleteEventListeners();
+  
+            // refres
+            fetchServiceOrders();
           } catch (error) {
             console.error("Error:", error);
+            alert(
+              "Fehler beim Löschen des Auftrags. Bitte versuchen Sie es erneut."
+            );
           }
         }
-
-        // Function to update status
-        async function updateOrderStatus(orderId, newStatus) {
-          try {
-            const response = await fetch(
-              `/api/registrations/${orderId}/status`,
-              {
+      }
+  
+      function attachEditAndDeleteEventListeners() {
+  document.querySelectorAll(".edit-btn").forEach((btn) => {
+          btn.addEventListener("click", (e) => {
+            const orderId = e.target.getAttribute("data-id");
+            const parentRow = e.target.closest("tr");
+            const commentCell = parentRow.querySelector(".comment-cell");
+  
+            const originalContent = commentCell.innerText;
+            commentCell.innerHTML = `<input type="text" value="${originalContent}" class="form-control comment-input">`;
+  
+            parentRow.querySelector(".save-btn").classList.remove("d-none");
+            parentRow.querySelector(".cancel-btn").classList.remove("d-none");
+  
+            e.target.classList.add("d-none");
+          });
+        });
+  
+        // Save button function
+        document.querySelectorAll(".save-btn").forEach((btn) => {
+          btn.addEventListener("click", async (e) => {
+            const orderId = e.target.getAttribute("data-id");
+            const parentRow = e.target.closest("tr");
+            const commentInput =
+              parentRow.querySelector(".comment-input").value;
+  
+            try {
+              const response = await fetch("/api/registrations/" + orderId, {
                 method: "PATCH",
                 headers: {
                   "Content-Type": "application/json",
                   Authorization: `Bearer ${localStorage.getItem("token")}`,
                 },
-                body: JSON.stringify({ Status: newStatus }),
-              }
-            );
-
-            if (!response.ok) {
-              throw new Error("Fehler beim Aktualisieren des Status");
-            }
-          } catch (error) {
-            console.error("Error:", error);
-            alert(
-              "Fehler beim Aktualisieren des Status. Bitte versuchen Sie es erneut."
-            );
-          }
-        }
-
-        // function to delete
-        async function deleteOrder(orderId) {
-          if (
-            confirm(
-              `Möchten Sie den Auftrag mit der ID ${orderId} wirklich löschen?`
-            )
-          ) {
-            try {
-              const response = await fetch(`/api/registrations/${orderId}`, {
-                method: "DELETE",
-                headers: {
-                  Authorization: `Bearer ${localStorage.getItem("token")}`,
-                },
+                body: JSON.stringify({ comment: commentInput }),
               });
-
+  
               if (!response.ok) {
-                throw new Error("Fehler beim Löschen des Auftrags");
+                throw new Error("Network response was not ok");
               }
-
-              // refres
-              fetchServiceOrders();
+  
+              const commentCell = parentRow.querySelector("td:nth-child(10)");
+              commentCell.innerText = commentInput;
+  
+              // Hide save and cancel button
+              parentRow.querySelector(".edit-btn").classList.remove("d-none");
+              parentRow.querySelector(".save-btn").classList.add("d-none");
+              parentRow.querySelector(".cancel-btn").classList.add("d-none");
             } catch (error) {
-              console.error("Error:", error);
-              alert(
-                "Fehler beim Löschen des Auftrags. Bitte versuchen Sie es erneut."
-              );
+              console.error("Error updating comment:", error);
+              alert("An unexpected error occurred. Please try again.");
             }
-          }
-        }
-
-        function attachEditAndDeleteEventListeners() {
-    document.querySelectorAll(".edit-btn").forEach((btn) => {
-            btn.addEventListener("click", (e) => {
-              const orderId = e.target.getAttribute("data-id");
-              const parentRow = e.target.closest("tr");
-              const commentCell = parentRow.querySelector(".comment-cell");
-
-              const originalContent = commentCell.innerText;
-              commentCell.innerHTML = `<input type="text" value="${originalContent}" class="form-control comment-input">`;
-
-              parentRow.querySelector(".save-btn").classList.remove("d-none");
-              parentRow.querySelector(".cancel-btn").classList.remove("d-none");
-
-              e.target.classList.add("d-none");
-            });
           });
-
-          // Save button function
-          document.querySelectorAll(".save-btn").forEach((btn) => {
-            btn.addEventListener("click", async (e) => {
-              const orderId = e.target.getAttribute("data-id");
-              const parentRow = e.target.closest("tr");
-              const commentInput =
-                parentRow.querySelector(".comment-input").value;
-
-              try {
-                const response = await fetch("/api/registrations/" + orderId, {
-                  method: "PATCH",
-                  headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${localStorage.getItem("token")}`,
-                  },
-                  body: JSON.stringify({ comment: commentInput }),
-                });
-
-                if (!response.ok) {
-                  throw new Error("Network response was not ok");
-                }
-
-                const commentCell = parentRow.querySelector("td:nth-child(10)");
-                commentCell.innerText = commentInput;
-
-                // Hide save and cancel button
-                parentRow.querySelector(".edit-btn").classList.remove("d-none");
-                parentRow.querySelector(".save-btn").classList.add("d-none");
-                parentRow.querySelector(".cancel-btn").classList.add("d-none");
-              } catch (error) {
-                console.error("Error updating comment:", error);
-                alert("An unexpected error occurred. Please try again.");
-              }
-            });
-          });
-
-          // cancel function
-          document.querySelectorAll(".cancel-btn").forEach((btn) => {
-            btn.addEventListener("click", (e) => {
-              const parentRow = e.target.closest("tr");
-              fetchServiceOrders();
-            });
-          });
-
-          //delete eventlistener
-          document.querySelectorAll(".delete-btn").forEach((btn) => {
+        });
+  
+        // cancel function
+        document.querySelectorAll(".cancel-btn").forEach((btn) => {
           btn.addEventListener("click", (e) => {
-        const orderId = e.target.getAttribute("data-id");
-        deleteOrder(orderId);
-      });
+            const parentRow = e.target.closest("tr");
+            fetchServiceOrders();
+          });
+        });
+  
+        //delete eventlistener
+        document.querySelectorAll(".delete-btn").forEach((btn) => {
+        btn.addEventListener("click", (e) => {
+      const orderId = e.target.getAttribute("data-id");
+      deleteOrder(orderId);
     });
-        }
-      });
-    </script>
+  });
+      }
+    });</script>
   </body>
 </html>
