@@ -41,9 +41,10 @@
 
 ### Erstellen des eingeschränkten Benutzers
 ```sql
--- Erstellen des Logins
+
 CREATE LOGIN [restricted_user_login] WITH PASSWORD = '1234';
 
+USE Jetstream_Backend;
 CREATE USER [restricted_user] FOR LOGIN [restricted_user_login];
 
 -- Gewähren von Berechtigungen

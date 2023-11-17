@@ -6,7 +6,7 @@ namespace JetStreamAPI.Models
     public class Employee
     {
         [Key]
-        public int EmployeeId { get; set; }
+        public int Id { get; set; }
 
         [Required]
         [StringLength(100)]

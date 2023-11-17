@@ -1,6 +1,8 @@
 ﻿using System;
+using Microsoft.EntityFrameworkCore.Proxies;
 using JetStreamAPI;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace JetStreamAPI.Models
 {
@@ -26,7 +28,9 @@ namespace JetStreamAPI.Models
         public string Priority { get; set; }
 
         [Required]
-        public string ServiceType { get; set; }
+        public int ServiceTypeId { get; set; }
+
+        public virtual ServiceType ServiceType { get; set; }
 
         [Required]
         public DateTime CreationDate { get; set; }

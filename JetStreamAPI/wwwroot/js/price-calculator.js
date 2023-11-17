@@ -18,17 +18,17 @@ document.addEventListener("DOMContentLoaded", function() {
             totalCost += 10;
         }
         
-        if (selectedService === "Kleiner-Service") {
+        if (selectedService === "1") {
             totalCost += 34.95;
-        } else if (selectedService === "Grosser-Service") {
+        } else if (selectedService === "2") {
             totalCost += 59.95;
-        } else if (selectedService === "Rennski-Service") {
+        } else if (selectedService === "3") {
             totalCost += 74.95;
-        } else if (selectedService === "Bindung-montieren-und-einstellen") {
+        } else if (selectedService === "4") {
             totalCost += 24.95;
-        } else if (selectedService === "Fell-zuschneiden") {
+        } else if (selectedService === "5") {
             totalCost += 14.95;
-        } else if (selectedService === "Heisswachsen") {
+        } else if (selectedService === "6") {
             totalCost += 19.95;
         }
 

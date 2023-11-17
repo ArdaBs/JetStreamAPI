@@ -55,7 +55,7 @@ public class RegistrationsController : ControllerBase
                 Email = serviceOrderDto.Email,
                 PhoneNumber = serviceOrderDto.Phone,
                 Priority = serviceOrderDto.Priority,
-                ServiceType = serviceOrderDto.Service,
+                ServiceTypeId = serviceOrderDto.ServiceTypeId,
                 CreationDate = creationDate,
                 PickupDate = pickupDate,
                 Comments = serviceOrderDto.Comment,
@@ -448,7 +448,7 @@ public class ServiceOrderDto
     public string Priority { get; set; }
 
     [Required]
-    public string Service { get; set; }
+    public int ServiceTypeId { get; set; }
 
     [Required]
     public DateTime CreationDate { get; set; }

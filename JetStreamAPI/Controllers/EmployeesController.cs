@@ -62,8 +62,8 @@ public class EmployeesController : ControllerBase
             _context.Employees.Add(employee);
             await _context.SaveChangesAsync();
 
-            _logger.LogInformation($"Benutzer {createEmployeeDto.Username} erfolgreich erstellt. ID: {employee.EmployeeId}");
-            return Ok(new { Message = "Benutzer erfolgreich erstellt.", EmployeeId = employee.EmployeeId });
+            _logger.LogInformation($"Benutzer {createEmployeeDto.Username} erfolgreich erstellt. ID: {employee.Id}");
+            return Ok(new { Message = "Benutzer erfolgreich erstellt.", EmployeeId = employee.Id });
         }
         catch (Exception ex)
         {

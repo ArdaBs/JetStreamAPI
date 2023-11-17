@@ -33,7 +33,7 @@ document.addEventListener("DOMContentLoaded", function() {
       email: email,
       phone: phone,
       priority: priority,
-      service: service,
+      serviceTypeId: service,
       create_date: creationDate.toISOString(), 
       pickup_date: pickupDate.toISOString(),
       comment: comment,
