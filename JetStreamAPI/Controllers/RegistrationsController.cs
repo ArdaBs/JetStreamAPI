@@ -1,4 +1,5 @@
 ﻿using JetStreamAPI.Models;
+using JetStreamAPI.DTOs;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -416,46 +417,4 @@ public class RegistrationsController : ControllerBase
         }
     }
 
-}
-
-// DTO for status
-public class UpdateOrderStatusDto
-{
-    public string Status { get; set; }
-}
-
-// DTO for update of comments
-public class UpdateCommentDto
-{
-    public string Comment { get; set; }
-}
-
-// DTO to get data
-public class ServiceOrderDto
-{
-    [Required]
-    [StringLength(100)]
-    public string Name { get; set; }
-    [Required]
-    [EmailAddress]
-    public string Email { get; set; }
-
-    [Required]
-    [Phone]
-    public string Phone { get; set; }
-
-    [Required]
-    public string Priority { get; set; }
-
-    [Required]
-    public int ServiceTypeId { get; set; }
-
-    [Required]
-    public DateTime CreationDate { get; set; }
-
-    [Required]
-    public DateTime PickupDate { get; set; }
-
-    public string Comment { get; set; }
-    public string Status { get; set; }
 }

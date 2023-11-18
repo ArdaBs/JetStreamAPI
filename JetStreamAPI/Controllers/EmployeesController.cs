@@ -1,4 +1,5 @@
 ﻿using JetStreamAPI.Models;
+using JetStreamAPI.DTO;
 using JetStreamAPI.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -195,18 +196,4 @@ public class EmployeesController : ControllerBase
         return Ok(new { Message = "Token is valid." });
     }
 
-
-    // DTO for login
-    public class LoginDto
-    {
-        public string Username { get; set; }
-        public string Password { get; set; }
-    }
-
-    // DTO to create user
-    public class CreateEmployeeDto
-    {
-        public string Username { get; set; }
-        public string Password { get; set; }
-    }
 }
