@@ -1,5 +1,5 @@
 ﻿using JetStreamAPI.Models;
-using JetStreamAPI.DTO;
+using JetStreamAPI.DTOs;
 using JetStreamAPI.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
