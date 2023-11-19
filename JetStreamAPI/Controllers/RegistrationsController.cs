@@ -98,14 +98,13 @@ public class RegistrationsController : ControllerBase
     /// </summary>
     /// <remarks>
     /// This endpoint returns a list of all service orders available in the system.
-    /// Requires authorization to access.
+    /// No authorization required.
     /// </remarks>
     /// <returns>A list of service orders.</returns>
     /// <response code="200">Returns the list of all service orders.</response>
     /// <response code="400">Returned if the request is invalid.</response>
     /// <response code="500">Returned if an internal server error occurs.</response>
     [HttpGet]
-    [Authorize]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -137,7 +136,7 @@ public class RegistrationsController : ControllerBase
     /// </summary>
     /// <remarks>
     /// This endpoint allows searching for service orders based on partial or full customer names.
-    /// Requires authorization to access.
+    /// No authorization required.
     /// </remarks>
     /// <param name="name">The name or partial name of the customer to search for.</param>
     /// <returns>A list of service orders matching the provided name.</returns>
@@ -145,7 +144,6 @@ public class RegistrationsController : ControllerBase
     /// <response code="400">Returned if the request is invalid.</response>
     /// <response code="500">Returned if an internal server error occurs.</response>
     [HttpGet("search")]
-    [Authorize]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -312,7 +310,7 @@ public class RegistrationsController : ControllerBase
     /// <remarks>
     /// This endpoint fetches service orders from the database. 
     /// It can filter the orders based on the provided priority value.
-    /// Requires authorization to access.
+    /// No authorization required.
     /// </remarks>
     /// <param name="priority">The priority by which to filter service orders. Optional.</param>
     /// <returns>A list of service orders, possibly filtered by priority.</returns>
@@ -320,7 +318,6 @@ public class RegistrationsController : ControllerBase
     /// <response code="400">Returned if the request is invalid.</response>
     /// <response code="500">Returned if an internal server error occurs.</response>
     [HttpGet("ByPriority")]
-    [Authorize]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
