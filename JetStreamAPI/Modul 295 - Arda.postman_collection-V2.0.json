@@ -1,0 +1,302 @@
+{
+	"info": {
+		"_postman_id": "d24c3146-c9d4-4791-959c-a20db1c1d0fa",
+		"name": "Modul 295 - Arda",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"_exporter_id": "29157576"
+	},
+	"item": [
+		{
+			"name": "PA",
+			"item": [
+				{
+					"name": "Orders",
+					"item": [
+						{
+							"name": "Get all orders",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": {
+										"token": "eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJuYW1laWQiOiJBcmRhIiwibmJmIjoxNzAwMTMxNzA4LCJleHAiOjE3MDAyMTgxMDgsImlhdCI6MTcwMDEzMTcwOH0.QTROmIPMkvAOi0kf44yGEbW1YQvnppdPuRkgsgjSCd8E36hk-FKFypSHHIv5Coxkm6cl3CbuaqJWQsvf__tSbA"
+									}
+								},
+								"method": "GET",
+								"header": [],
+								"url": "https://localhost:7092/api/Registrations"
+							},
+							"response": []
+						},
+						{
+							"name": "Get orders by priority",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": {
+										"token": "eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJuYW1laWQiOiJBcmRhIiwibmJmIjoxNzAwMTMxNzA4LCJleHAiOjE3MDAyMTgxMDgsImlhdCI6MTcwMDEzMTcwOH0.QTROmIPMkvAOi0kf44yGEbW1YQvnppdPuRkgsgjSCd8E36hk-FKFypSHHIv5Coxkm6cl3CbuaqJWQsvf__tSbA"
+									}
+								},
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": []
+								},
+								"url": {
+									"raw": "https://localhost:7092/api/Registrations/ByPriority?priority=low",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "7092",
+									"path": [
+										"api",
+										"Registrations",
+										"ByPriority"
+									],
+									"query": [
+										{
+											"key": "priority",
+											"value": "low"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Search order by name",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": {
+										"token": "eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJuYW1laWQiOiJBcmRhIiwibmJmIjoxNzAwMTMxNzA4LCJleHAiOjE3MDAyMTgxMDgsImlhdCI6MTcwMDEzMTcwOH0.QTROmIPMkvAOi0kf44yGEbW1YQvnppdPuRkgsgjSCd8E36hk-FKFypSHHIv5Coxkm6cl3CbuaqJWQsvf__tSbA"
+									}
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "https://localhost:7092/api/Registrations/search?name=Arda",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "7092",
+									"path": [
+										"api",
+										"Registrations",
+										"search"
+									],
+									"query": [
+										{
+											"key": "name",
+											"value": "Arda"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Post order",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"name\": \"namestring\",\r\n  \"email\": \"user@example.com\",\r\n  \"phone\": \"078 825 32\",\r\n  \"priority\": \"express\",\r\n  \"serviceTypeId\": 1, // between 1-3\r\n  \"creationDate\": \"2023-11-19T16:00:34.504Z\",\r\n  \"pickupDate\": \"2023-11-19T16:00:34.504Z\",\r\n  \"comment\": \"\",\r\n  \"status\": \"\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": "https://localhost:7092/api/Registrations"
+							},
+							"response": []
+						},
+						{
+							"name": "Delete all orders(For Devs)",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": {
+										"token": "eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJuYW1laWQiOiJBcmRhIiwibmJmIjoxNzAwMTMxNzA4LCJleHAiOjE3MDAyMTgxMDgsImlhdCI6MTcwMDEzMTcwOH0.QTROmIPMkvAOi0kf44yGEbW1YQvnppdPuRkgsgjSCd8E36hk-FKFypSHHIv5Coxkm6cl3CbuaqJWQsvf__tSbA"
+									}
+								},
+								"method": "DELETE",
+								"header": [],
+								"url": "https://localhost:7092/api/Registrations",
+								"description": "Be careful it deletes all orders without asking twice"
+							},
+							"response": []
+						},
+						{
+							"name": "Delete order by id",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": {
+										"token": "eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJuYW1laWQiOiJBcmRhIiwibmJmIjoxNzAwNDEwNTQ3LCJleHAiOjE3MDA0OTY5NDcsImlhdCI6MTcwMDQxMDU0N30.bkOx9HW5cEtcVpLId14vwbSzLHKcK07V0N89_ToP4s191H0jDCzIajV0YgUELzKip7B_EHYqtrRgJVNhIpHKww"
+									}
+								},
+								"method": "DELETE",
+								"header": [],
+								"url": "https://localhost:7092/api/Registrations/5"
+							},
+							"response": []
+						},
+						{
+							"name": "PATCH Comment",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": {
+										"token": "eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJuYW1laWQiOiJBcmRhIiwibmJmIjoxNzAwMjIwODUwLCJleHAiOjE3MDAzMDcyNTAsImlhdCI6MTcwMDIyMDg1MH0.Wvf9yloajuyCCFuQJpmZ7-pb_rs0zYFp6lGAqsdTd0i7fEYMKPFKZPUWgFkXgGql1FcVrnjKM2M-eimPdgUyGg"
+									}
+								},
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"comment\": \"Moin\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": "https://localhost:7092/api/Registrations/6"
+							},
+							"response": []
+						},
+						{
+							"name": "PATCH Status",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": {
+										"token": "eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJuYW1laWQiOiJBcmRhIiwibmJmIjoxNzAwMTMxNzA4LCJleHAiOjE3MDAyMTgxMDgsImlhdCI6MTcwMDEzMTcwOH0.QTROmIPMkvAOi0kf44yGEbW1YQvnppdPuRkgsgjSCd8E36hk-FKFypSHHIv5Coxkm6cl3CbuaqJWQsvf__tSbA"
+									}
+								},
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"status\": \"Offen\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": "https://localhost:7092/api/Registrations/2/status"
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Employees",
+					"item": [
+						{
+							"name": "Create employee",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": {
+										"token": "eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJuYW1laWQiOiJBcmRhIiwibmJmIjoxNzAwMTMxNzA4LCJleHAiOjE3MDAyMTgxMDgsImlhdCI6MTcwMDEzMTcwOH0.QTROmIPMkvAOi0kf44yGEbW1YQvnppdPuRkgsgjSCd8E36hk-FKFypSHHIv5Coxkm6cl3CbuaqJWQsvf__tSbA"
+									}
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"username\": \"Arda\",\r\n  \"password\": \"1234\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "https://localhost:7092/api/Employees/create",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "7092",
+									"path": [
+										"api",
+										"Employees",
+										"create"
+									],
+									"query": [
+										{
+											"key": "string",
+											"value": "Was geht",
+											"disabled": true
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Login",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": {
+										"token": "eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJuYW1laWQiOiJBcmRhIiwibmJmIjoxNzAwMTMxNzA4LCJleHAiOjE3MDAyMTgxMDgsImlhdCI6MTcwMDEzMTcwOH0.QTROmIPMkvAOi0kf44yGEbW1YQvnppdPuRkgsgjSCd8E36hk-FKFypSHHIv5Coxkm6cl3CbuaqJWQsvf__tSbA"
+									}
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"username\": \"Arda\",\r\n  \"password\": \"1234\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": "https://localhost:7092/api/Employees/Login"
+							},
+							"response": []
+						},
+						{
+							"name": "Unlock employee",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": {
+										"token": "eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJuYW1laWQiOiJBcmRhIiwibmJmIjoxNzAwMTMxNzA4LCJleHAiOjE3MDAyMTgxMDgsImlhdCI6MTcwMDEzMTcwOH0.QTROmIPMkvAOi0kf44yGEbW1YQvnppdPuRkgsgjSCd8E36hk-FKFypSHHIv5Coxkm6cl3CbuaqJWQsvf__tSbA"
+									}
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": "https://localhost:7092/api/Employees/unlock/Arda"
+							},
+							"response": []
+						}
+					]
+				}
+			],
+			"description": "Important, check for the Bearer-Token. It may needs to be replaced with a valid one"
+		}
+	]
+}
