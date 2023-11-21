@@ -20,17 +20,29 @@ Das Repository ist wie folgt strukturiert:
 }
 ```
 
-## Datenbankinitialisierung
+## Datenbank initialisieren
 
-Bevor Sie mit der Anwendung beginnen, stellen Sie sicher, dass keine bestehende Datenbank namens `JetStream_Backend` existiert, da der folgende Prozess eine neue Datenbank mit diesem Namen erstellt. Führen Sie die folgenden Befehle im Package Manager Console aus, um die Datenbank zu initialisieren:
+### Schritt-für-Schritt-Anleitung zur Datenbankinitialisierung
 
-1. Füge eine neue Migration hinzu:
-   ```
-   Add-Migration InitialCreate
-   ```
-2. Aktualisiere die Datenbank, um die Migration anzuwenden:
-   ```
-   Update-Database
+Bevor Sie mit der Anwendung beginnen, stellen Sie sicher, dass keine bestehende Datenbank namens `JetStream_Backend` existiert, da der folgende Prozess eine neue Datenbank mit diesem Namen erstellt. Das Projekt wurde bereits mit benutzerdefinierten Befehlen migriert. Daher ist nur noch der Befehl `Update-Database` erforderlich.
+
+1. Öffnen Sie das Projekt in Visual Studio, indem Sie auf die `.sln`-Datei des Projekts doppelklicken.
+2. Sobald Visual Studio gestartet ist, öffnen Sie die `Developer PowerShell`, indem Sie im unteren Bereich von Visual Studio auf die entsprechende Option klicken.
+3. Geben Sie den folgenden Befehl in die `Developer PowerShell` ein:
+
+   ```powershell
+   cd JetStreamAPI
+   dotnet ef database update --connection "Server=localhost;Database=JetStream_Backend;Trusted_Connection=True;TrustServerCertificate=True;MultipleActiveResultSets=true"
    ```
 
-Diese Befehle erstellen das Schema basierend auf dem aktuellen Datenmodell.
+   Verwenden Sie diesen `cd`-Befehl, falls in der PowerShell nicht bereits `.../JetStreamAPI/JetStreamAPI>` angezeigt wird.
+
+Durch Ausführen dieses Befehls wird die Datenbank basierend auf den vorhandenen Migrationen aktualisiert und für die Verwendung mit der Anwendung vorbereitet.
+
+## Wie kommt man auf JetStream Website?
+
+Nach dem starten des Backends und initalisieren der Datenbank, kann man dies eingeben:
+
+```URL
+https://localhost:7092/index.html
+```

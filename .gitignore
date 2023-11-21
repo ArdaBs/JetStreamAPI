@@ -362,5 +362,5 @@ MigrationBackup/
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
 
-# Ignoring Migrations folder
-**/Migrations/
+# Ignoring Migrations folder (not commented)
+# **/Migrations/
